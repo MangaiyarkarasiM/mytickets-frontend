@@ -1,0 +1,22 @@
+.cardstyle{
+    background-color: white;
+    border: 1px solid white;
+    display: flex;
+    margin-right: 5px;
+}
+
+.title{
+    margin-right: 8em;
+}
+
+@media (min-width:768px){
+    .title{
+        margin-right: 25em;
+    }
+}
+
+@media (min-width:400px) and (max-width:768px){
+    .title{
+        margin-right: 14em;
+    }
+}

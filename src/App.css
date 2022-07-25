@@ -1,0 +1,43 @@
+body{
+    background-color: #f0f2f5;
+}
+
+.logincard{
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.5rem;
+}
+
+.nav-items:hover{
+    color: black;
+    text-decoration: none;
+}
+
+.nav-items.active{
+    border-bottom: 1.5px solid rgb(227, 89, 74);
+    color: white;
+}
+
+.nav-items{
+    color: white;
+}
+
+.footer-item:hover{
+    color: white;
+    text-decoration: none;
+}
+
+.footer-item{
+    color: rgb(205, 202, 202)
+}
+
+.dropdown-menu{
+    min-width: 7rem !important;
+}
+
+.profile-card{
+    margin-left: 15%;
+    margin-right: 15%;
+}

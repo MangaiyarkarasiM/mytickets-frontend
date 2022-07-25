@@ -1,0 +1,18 @@
+.profileModal{
+    background-color: rgb(71 85 105 / 0.5);
+    top: 0px;
+    left: 0px;
+    position: fixed;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: 10;
+}
+
+.dialog{
+    overflow-y: initial !important;
+}
+
+.scrollable{
+    max-height: calc(100vh - 200px);
+    overflow-y:scroll;
+}
