@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Layout from "../components/Layout/Layout";
 import fetchApi from "../utils/fetchApi";
 import ProfileForm from "../components/Profile/ProfileForm";
 import Modal from "../components/Modal/Modal";
@@ -36,9 +35,6 @@ function ProfilePage(props) {
 
   return (
     <>
-      <div className="container-fluid">
-        <Layout />
-      </div>
       <div className="container">
         <div className="row my-5">
           <div className="col-sm-12 col-md-12 col-lg-12">

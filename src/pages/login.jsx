@@ -15,7 +15,7 @@ function LoginPage(props) {
 
   return (
     <div className="my-5 d-flex flex-column">
-      <h3 className="text-info text-center">Book Your Show</h3>
+      <h3 className="text-dark text-center font-italic">myTickets.com</h3>
       <div
         className="mt-4 logincard shadow"
         style={{ width: "50vw", margin: "auto", padding: "0 0 14px 0" }}
@@ -64,7 +64,7 @@ function LoginPage(props) {
 
                 <button
                   type="submit"
-                  className="btn d-block bg-info rounded mb-4"
+                  className="btn d-block btn-outline-primary rounded mb-4"
                 >
                   Login
                 </button>

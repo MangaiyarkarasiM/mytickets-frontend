@@ -11,17 +11,17 @@ body{
 }
 
 .nav-items:hover{
-    color: black;
+    color: white;
     text-decoration: none;
 }
 
 .nav-items.active{
-    border-bottom: 1.5px solid rgb(227, 89, 74);
+    border-bottom: 1.5px solid red;
     color: white;
 }
 
 .nav-items{
-    color: white;
+    color: rgb(198, 198, 198);
 }
 
 .footer-item:hover{
@@ -40,4 +40,18 @@ body{
 .profile-card{
     margin-left: 15%;
     margin-right: 15%;
+}
+
+.container-fluid{
+    padding: 0 !important;
+}
+
+.bg-black{
+    background-color: rgb(39, 35, 35);
+}
+
+@media (max-width:768px) {
+    .column{
+        flex-direction: column !important;
+    }    
 }

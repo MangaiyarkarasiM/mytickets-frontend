@@ -2,10 +2,9 @@
     background-color: white;
     border: 1px solid white;
     display: flex;
-    margin-right: 5px;
 }
 
-.title{
+/* .title{
     margin-right: 8em;
 }
 
@@ -19,4 +18,4 @@
     .title{
         margin-right: 14em;
     }
-}
+} */

@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../components/Layout/Layout";
+import React, { useEffect, useState, useContext } from "react";
 import fetchApi from "../utils/fetchApi";
 import TheaterList from "../components/TheaterList/TheaterList";
 import { TheaterProvider } from "../context/theaterContext";
 import TheaterForm from "../components/Theater/TheaterForm";
+import { GlobalContext} from "../context/globalContext";
 
 function TheatersPage(props) {
-  let [message, setMessage] = useState("");
-  let [theaters, setTheaters] = useState([]);
+  const {theaters, getTheater, message, setMessage} = useContext(GlobalContext);
   const [showEdit, setShowEdit] = useState(false);
   const [id, setId] = useState("");
 
@@ -15,17 +14,6 @@ function TheatersPage(props) {
   useEffect(() => {
     getTheater();
   }, []);
-
-  async function getTheater() {
-    let res = await fetchApi.get("/theaters");
-    //console.log(res.data);
-    if (res.data.statusCode === 200) {
-      setTheaters(res.data.theaters);
-      //setMessage(res.data.message);
-    } else {
-      console.log(res.data);
-    }
-  }
 
   //deleting a theater with ID
   const deleteTheater = async (id) => {
@@ -69,9 +57,6 @@ function TheatersPage(props) {
 
   return (
     <>
-      <div className="container-fluid">
-        <Layout />
-      </div>
       <div className="container">
         <TheaterProvider
           value={{
@@ -86,7 +71,7 @@ function TheatersPage(props) {
           <div>
             <div className="row">
               <button
-                className="btn btn-primary mt-4 ml-4"
+                className="btn btn-outline-primary mt-4 ml-4"
                 onClick={() => {
                   setShowEdit(true);
                 }}
@@ -108,7 +93,7 @@ function TheatersPage(props) {
               ) : null}
             </div>
             {message ? <div>{message}</div> : ""}
-            <div>
+            <div className="row m-0">
               <TheaterList theaters={theaters} />
             </div>
           </div>

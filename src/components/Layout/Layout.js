@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { GlobalContext} from "../../context/globalContext";
 
 const navitemsadmin = [
   {
@@ -7,12 +8,12 @@ const navitemsadmin = [
     title: "Home",
   },
   {
-    to: "/theaters",
-    title: "Theaters",
-  },
-  {
     to: "/movies",
     title: "Movies",
+  },
+  {
+    to: "/theaters",
+    title: "Theaters",
   },
   {
     to: "/shows",
@@ -36,6 +37,7 @@ const navitems = [
 ];
 
 function Layout(props) {
+  let {user} = useContext(GlobalContext);
   const navigate = useNavigate();
   const [userID, setUserID] = useState("");
   const [role, setRole] = useState("");
@@ -47,7 +49,7 @@ function Layout(props) {
   }, []);
 
   return (
-    <div className="d-flex align-items-center justify-content-between bg-info p-2">
+    <div className="d-flex align-items-center justify-content-between bg-dark p-2">
       <nav className="navbar navbar-expand-lg navbar-light">
         <button
           className="btn navbar-toggler mr-2"
@@ -64,16 +66,16 @@ function Layout(props) {
         </button>
         <div
           style={{ fontSize: "1.1rem" }}
-          className="font-weight-bold text-center font-italic mr-3"
+          className="font-weight-bold text-center font-italic mr-3 text-white"
         >
-          myTickets
+          myTickets.com
         </div>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav">
-            {role === "admin"
+            {user.role === "admin"
               ? navitemsadmin.map((nav) => {
                   return (
-                    <li className="nav-item">
+                    <li className="nav-item" key={nav.title}>
                       <NavLink
                         key={nav.title}
                         className="mx-4 nav-items"
@@ -86,7 +88,7 @@ function Layout(props) {
                 })
               : navitems.map((nav) => {
                   return (
-                    <li>
+                    <li className="nav-item" key={nav.title}>
                       <NavLink
                         key={nav.title}
                         className="mx-4 nav-items"

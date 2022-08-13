@@ -32,12 +32,12 @@ function MovieShow(props) {
             let theater=res.data.theaters.filter((theater)=>{
                 let avail=false
                 show?.forEach((s)=>{
-                    avail= s.theaterID===theater._id;
+                    avail= s.theater===theater._id;
                 })
                 return avail;
             }).map((theater)=>{
                 show?.forEach((s)=>{
-                    if(s.theaterID===theater._id)
+                    if(s.theater===theater._id)
                     {
                         theater.shows.push(s._id)
                     } 

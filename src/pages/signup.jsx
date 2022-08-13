@@ -30,7 +30,7 @@ function SignupPage(props) {
 
   return (
     <div className="my-5 mb-3 d-flex flex-column">
-      <h3 className="text-info text-center">Book Your Show</h3>
+      <h3 className="text-dark text-center font-italic">myTickets.com</h3>
       <div
         className="mt-3 logincard shadow"
         style={{ width: "50vw", margin: "auto", padding: "0 0 14px 0" }}
@@ -109,7 +109,7 @@ function SignupPage(props) {
                 </div>
                 <button
                   type="submit"
-                  className="btn d-block bg-info rounded mb-3"
+                  className="btn d-block btn-outline-primary rounded mb-3"
                 >
                   Sign up
                 </button>

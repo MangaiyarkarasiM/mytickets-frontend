@@ -1,67 +1,47 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import {MovieContext} from '../../context/movieContext';
-import './Movie.css'
+import { GlobalContext } from "../../context/globalContext";
+import './Movie.css';
 
 function Movie(props) {
-    const [role,setRole] = useState('');
-
-    useEffect(()=>{
-        const ss = sessionStorage.getItem('role');
-        setRole(ss);
-    },[])
-    //console.log(props)
+    const { user } = useContext(GlobalContext);
     const {deleteMovie,setShowEdit,setId} = useContext(MovieContext);
 
     return (
-      <div className="col-lg-4 col-md-6 col-sm-12 col-xl-3 mr-4 mb-4">
+      <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3 my-4 p-0">
         <div
-          className="card my-4 mx-4 justify-content-center p-2"
-          style={{ width: "18rem" }}
+          className="card justify-content-center pb-2"
+          style={{ width: "13rem", backgroundColor: "#f0f2f5", border: "none" }}
         >
             <Link to={`/movies/${props.movie._id}`} className="cardstyle">
-             <div className="card-body">
+            <img src={props.movie.posterUrl} className="card-img-top" alt={props.movie.name} style={{minHeight:"20rem", maxHeight:"20rem"}}/>
+             <div className="card-body p-0 p-1">
             
               <div className="title">
-                <div className="font-weight-bold text-uppercase text-secondary mb-2">
-                  Name: {props.movie.name}
+                <div className="font-weight-bold text-dark mb-2" style={{fontSize:'1.3rem'}}>
+                {props.movie.name}
                 </div>
               </div>
-              <div>
-                <div className="font-weight-bold text-uppercase text-secondary mb-2">
-                  {props.movie.genre}
+              <div className="font-weight-bold text-secondary overflow mb-2">
+                  {props.movie.languages.toString()}
                 </div>
-              </div>
-              <div>
-                <div className="font-weight-bold text-uppercase text-secondary mb-2">
+              <div className='d-flex justify-content-between mb-2'>
+                <div className="font-weight-bold text-secondary">
                   {props.movie.cert}
                 </div>
-              </div>
-              <div>
-                <div className="font-weight-bold text-uppercase text-secondary mb-2">
-                  {props.movie.rating}
+                <div className="font-weight-bold text-secondary">
+                  ⭐{props.movie.rating}
                 </div>
               </div>
-              <div>
-                <div className="font-weight-bold text-uppercase text-secondary mb-2">
-                  {props.movie.cast}
-                </div>
-              </div>
-              <div>
-                <div className="font-weight-bold text-uppercase text-secondary mb-2">
-                  {props.movie.duration}
-                </div>
-              </div>
-            
-            
-            
           </div>
           </Link>
-          {role === "admin" ? (
-              <div className="d-flex justify-content-between">
+          {user.role === "admin" ? (
+              <div className="d-flex justify-content-around">
                 <button
-                  className="btn btn-warning py-1 px-2 mr-4"
+                  className="btn btn-outline-warning py-1 px-2"
                   onClick={() => {
+                    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
                     setShowEdit(true);
                     setId(props.movie._id);
                   }}
@@ -69,7 +49,7 @@ function Movie(props) {
                   Edit
                 </button>
                 <button
-                  className="btn btn-danger py-1 px-2"
+                  className="btn btn-outline-danger py-1 px-2"
                   onClick={() => {
                     deleteMovie(props.movie._id);
                   }}

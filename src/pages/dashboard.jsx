@@ -1,56 +1,31 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../components/Layout/Layout";
-import fetchApi from "../utils/fetchApi";
+import React, { useContext } from "react";
 import Slider from "../components/Slider/Slider";
-//import ima from '../assets/ET.jpg'
+import { GlobalContext} from "../context/globalContext";
 
 function DashboardPage(props) {
-  let [movies, setMovies] = useState([]);
-  let [theaters, setTheaters] = useState([]);
+  const { theaters, movies } = useContext(GlobalContext);
 
-  useEffect(() => {
-    getMovie();
-    getTheater();
-  }, []);
-
-  async function getMovie() {
-    let res = await fetchApi.get("/movies");
-    //console.log(res.data);
-    if (res.data.statusCode === 200) {
-      setMovies(res.data.movies);
-      //setMessage(res.data.message);
-    } else {
-      console.log(res.data);
-    }
-  }
-
-  async function getTheater() {
-    let res = await fetchApi.get("/theaters");
-    //console.log(res.data);
-    if (res.data.statusCode === 200) {
-      setTheaters(res.data.theaters);
-      //setMessage(res.data.message);
-    } else {
-      console.log(res.data);
-    }
-  }
+  // useEffect(() => {
+  //   getMovie();
+  //   getTheater();
+  // }, []);
 
   return (
     <>
       <div className="container-fluid">
-        <Layout />
+        <Slider />
       </div>
       <div className="container">
         <div className="row">
           <div className="col-sm-12 col-md-12 col-lg-12">
-            <Slider />
+            
           </div>
         </div>
         <div className="row">
           <div className="col-sm-12 col-md-12 col-lg-6">
             <div>
-              <h3 className="ml-2 mt-2 text-info text-uppercase">
-                Movies running
+              <h3 className="ml-2 mt-2 text-danger">
+                Movies
               </h3>
               {movies.map((movie, index) => {
                 return (
@@ -61,7 +36,7 @@ function DashboardPage(props) {
                     <div style={{ width: "18rem" }} className="text-uppercase">
                       {movie.name}
                     </div>
-                    <div>Rating: {movie.rating}/10</div>
+                    <div>Rating: {movie.rating}/5</div>
                   </div>
                 );
               })}
@@ -69,8 +44,8 @@ function DashboardPage(props) {
           </div>
           <div className="col-sm-12 col-md-12 col-lg-6">
             <div>
-              <h3 className="ml-2 mt-2 text-info text-uppercase">
-                Theaters Available
+              <h3 className="ml-2 mt-2 text-danger">
+                Theaters
               </h3>
               {theaters.map((theater, index) => {
                 return (
@@ -83,7 +58,7 @@ function DashboardPage(props) {
                     </div>
                     <div>
                       City:{" "}
-                      <spam className="text-uppercase">{theater.city}</spam>
+                      <span className="text-uppercase">{theater.city}</span>
                     </div>
                   </div>
                 );

@@ -242,7 +242,7 @@ function ProfileForm(props) {
       <div className="d-flex justify-content-end align-items-center mr-5">
         <button
           type="button"
-          className="btn btn-secondary mr-4"
+          className="btn btn-outline-secondary mr-4"
           onClick={() => {
             props.setShowModal(false);
           }}
@@ -251,7 +251,7 @@ function ProfileForm(props) {
         </button>
         <button
           type="submit"
-          className="btn btn-primary"
+          className="btn btn-outline-primary"
           form="fooId"
           id="close"
         >
