@@ -19,6 +19,7 @@ import Seatingpage from "./pages/seating";
 
 const exclusionArray = ["/login", "/signup", "/bookings", "/"];
 const layoutExclusionArray = ["/login", "/signup", "/"];
+const footerExclusionArray = ["/booktickets"]
 
 function App() {
   let [movies, setMovies] = useState([]);
@@ -126,7 +127,7 @@ function App() {
         <Route path="/" element={<LoginPage />}></Route>
       </Routes>
       <div className="container-fluid">
-        <Footer />
+      {footerExclusionArray.indexOf(location.pathname.slice(0,12)) < 0 && <Footer />}
       </div>
     </GlobalProvider>
   );

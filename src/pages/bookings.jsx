@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import fetchApi from "../utils/fetchApi";
 import moment from 'moment';
+import { GlobalContext } from "../context/globalContext";
 
 function BookingsPage(props) {
+  const { user } = useContext(GlobalContext);
   let [bookings,setBookings] = useState([]);
 
   const getBookings = async () => {
-    let res = await fetchApi.get("/bookings");
+  
+    let res = user.role === 'admin' ? await fetchApi.get("/bookings") : await fetchApi.get(`/bookings/user/${user.userId}`);
     //console.log(res.data);
     if (res.data.statusCode === 200) {
       setBookings(res.data.bookings);
@@ -33,7 +36,7 @@ function BookingsPage(props) {
                   <th scope="col">User email</th>
                   <th scope="col">Movie Name</th>
                   <th scope="col">Theater Name</th>
-                  <th scope="col">Date</th>
+                  <th scope="col">Show Date</th>
                   <th scope="col">Show Start Time</th>
                   <th scope="col">Show End Time</th>
                   <th scope="col">Booked Date</th>
@@ -55,7 +58,9 @@ function BookingsPage(props) {
                         <td>{booking.show.startTime}</td>
                         <td>{booking.show.endTime}</td>
                         <td>{moment(booking.bookedDate).format('DD-MM-YYYY')}</td>
-                        <td>{booking.seatsBooked}</td>
+                        <td>{booking.seatsBooked?.map((s)=>{
+                          return <span key={s}>{s} </span>
+                        })}</td>
                         <td>{booking.amountPaid}</td>
                         <td>{booking.status}</td>
                       </tr>

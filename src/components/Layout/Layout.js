@@ -22,7 +22,7 @@ const navitemsadmin = [
   {
     to: "/bookings",
     title: "Bookings",
-  },
+  }
 ];
 
 const navitems = [
@@ -34,6 +34,10 @@ const navitems = [
     to: "/movies",
     title: "Movies",
   },
+  {
+    to: "/bookings",
+    title: "My Bookings",
+  }
 ];
 
 function Layout(props) {

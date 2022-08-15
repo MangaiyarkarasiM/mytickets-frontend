@@ -88,7 +88,7 @@ const MovieShowPage = () => {
             </div>
           </div>
         </section>
-        <section className="bg-light m-3 p-3">
+        <section className="bg-light m-3 p-3" style={{ minHeight: "40vh" }}>
           <div>
             {Object.keys(showsByTheater).length > 0 ? (
               Object.keys(showsByTheater)?.map((th) => {
@@ -100,10 +100,9 @@ const MovieShowPage = () => {
                   return moment(String(cd)).isBefore(String(d));
                 });
                 return (
-                  <>
+                  <div key={th}>
                     {shows.length > 0 ? (
                       <div
-                        key={th}
                         className="d-flex flex-row mb-3 align-items-center"
                       >
                         <>
@@ -140,7 +139,7 @@ const MovieShowPage = () => {
                         </>
                       </div>
                     ) : null}
-                  </>
+                  </div>
                 );
               })
             ) : (
