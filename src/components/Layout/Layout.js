@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { GlobalContext} from "../../context/globalContext";
+import { GlobalContext } from "../../context/globalContext";
 
 const navitemsadmin = [
   {
@@ -22,7 +22,7 @@ const navitemsadmin = [
   {
     to: "/bookings",
     title: "Bookings",
-  }
+  },
 ];
 
 const navitems = [
@@ -37,11 +37,11 @@ const navitems = [
   {
     to: "/bookings",
     title: "My Bookings",
-  }
+  },
 ];
 
 function Layout(props) {
-  let {user} = useContext(GlobalContext);
+  let { user } = useContext(GlobalContext);
   const navigate = useNavigate();
   const [userID, setUserID] = useState("");
   const [role, setRole] = useState("");

@@ -7,15 +7,23 @@ import { GlobalContext } from "../context/globalContext";
 import moment from "moment";
 
 function ShowsPage(props) {
-  const { message, setMessage } = useContext(GlobalContext);
+  const { message, setMessage, onAuthFail } = useContext(GlobalContext);
   const [shows, setShows] = useState([]);
   const [show, setShow] = useState({});
   const [showModal, setShowModal] = useState(false);
 
   const getShows = async () => {
-    let res = await fetchApi.get("/shows");
-    //console.log(res.data);
-    if (res.data.statusCode === 200) {
+    let token = sessionStorage.getItem("token");
+    let res = await fetchApi.get("/shows", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (res.data.statusCode === 401) {
+      onAuthFail();
+    } else if (res.data.statusCode === 200) {
       setShows(res.data.shows);
       //setMessage(res.data.message);
     } else {
@@ -29,22 +37,41 @@ function ShowsPage(props) {
 
   //deleting a show with ID
   const deleteShow = async (id) => {
-    //console.log(id);
-    let res = await fetchApi.delete(`/shows/${id}`);
-    //console.log(res.data);
-    if (res.data.statusCode === 200) {
+    let token = sessionStorage.getItem("token");
+    let res = await fetchApi.delete(`/shows/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (res.data.statusCode === 401) {
+      onAuthFail();
+    } else if (res.data.statusCode === 200) {
       getShows();
-      //setMessage(res.data.message)
     } else {
       console.log(res.data);
+      setMessage(res.data.message);
     }
   };
 
   //editing a show with ID
   const editShow = async (value) => {
-    let res = await fetchApi.put(`/shows/${show._id}`, { ...value });
-    //console.log(res.data);
-    if (res.data.statusCode === 200) {
+    let token = sessionStorage.getItem("token");
+    let res = await fetchApi.put(
+      `/shows/${show._id}`,
+      { ...value },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (res.data.statusCode === 401) {
+      onAuthFail();
+    } else if (res.data.statusCode === 200) {
       getShows();
       setShowModal(false);
       setShow({});
@@ -57,19 +84,46 @@ function ShowsPage(props) {
 
   //adding a new show
   const addShow = async (value) => {
-    console.log(value);
-    let res = await fetchApi.post("/shows/create-show", { ...value });
-    //console.log(res.data);
-    if (res.data.statusCode === 200) {
-      let resSeat = await fetchApi.post("/seatings/create-seating", {
-        show: res.data.details._id,
-      });
-      if (resSeat.data.statusCode === 200) {
+    let token = sessionStorage.getItem("token");
+    let res = await fetchApi.post(
+      "/shows/create-show",
+      { ...value },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (res.data.statusCode === 401) {
+      onAuthFail();
+    } else if (res.data.statusCode === 200) {
+      let resSeat = await fetchApi.post(
+        "/seatings/create-seating",
+        {
+          show: res.data.details._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (resSeat.data.statusCode === 401) {
+        onAuthFail();
+      } else if (resSeat.data.statusCode === 200) {
         getShows();
         setShowModal(false);
         setMessage("");
       } else {
-        let res = await fetchApi.delete(`/shows/${res.data.details._id}`);
+        let res = await fetchApi.delete(`/shows/${res.data.details._id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
         setMessage("Someting went wrong, please try again later");
         console.log(res.data);
       }

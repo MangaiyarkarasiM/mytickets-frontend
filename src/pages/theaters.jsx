@@ -3,10 +3,11 @@ import fetchApi from "../utils/fetchApi";
 import TheaterList from "../components/TheaterList/TheaterList";
 import { TheaterProvider } from "../context/theaterContext";
 import TheaterForm from "../components/Theater/TheaterForm";
-import { GlobalContext} from "../context/globalContext";
+import { GlobalContext } from "../context/globalContext";
 
 function TheatersPage(props) {
-  const {theaters, getTheater, message, setMessage} = useContext(GlobalContext);
+  const { theaters, getTheater, message, setMessage, onAuthFail } =
+    useContext(GlobalContext);
   const [showEdit, setShowEdit] = useState(false);
   const [id, setId] = useState("");
 
@@ -17,41 +18,72 @@ function TheatersPage(props) {
 
   //deleting a theater with ID
   const deleteTheater = async (id) => {
-    let res = await fetchApi.delete(`/theaters/${id}`);
-    //console.log(res.data);
-    if (res.data.statusCode === 200) {
+    let token = sessionStorage.getItem("token");
+    let res = await fetchApi.delete(`/theaters/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (res.data.statusCode === 401) {
+      onAuthFail();
+    } else if (res.data.statusCode === 200) {
       getTheater();
-      //setMessage(res.data.message)
     } else {
       console.log(res.data);
+      setMessage(res.data.message);
     }
   };
 
   //editing a theater with ID
   const editTheater = async (value) => {
-    //console.log(value);
-    let res = await fetchApi.put(`/theaters/${value._id}`, { ...value });
-    //console.log(res.data);
-    if (res.data.statusCode === 200) {
+    let token = sessionStorage.getItem("token");
+    let res = await fetchApi.put(
+      `/theaters/${value._id}`,
+      { ...value },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (res.data.statusCode === 401) {
+      onAuthFail();
+    } else if (res.data.statusCode === 200) {
       getTheater();
       setShowEdit(false);
       setId("");
-      //setMessage(res.data.message)
     } else {
       console.log(res.data);
+      setMessage(res.data.message);
     }
   };
 
   //adding a new theater
   const addTheater = async (value) => {
-    let res = await fetchApi.post("/theaters/create-theater", { ...value });
-    //console.log(res.data);
-    if (res.data.statusCode === 200) {
+    let token = sessionStorage.getItem("token");
+    let res = await fetchApi.post(
+      "/theaters/create-theater",
+      { ...value },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (res.data.statusCode === 401) {
+      onAuthFail();
+    } else if (res.data.statusCode === 200) {
       getTheater();
       setShowEdit(false);
-      //setMessage(res.data.message)
     } else {
       console.log(res.data);
+      setMessage(res.data.message);
     }
   };
 
@@ -79,16 +111,16 @@ function TheatersPage(props) {
                 Add Theater
               </button>
             </div>
-            <div className="row">
+            <div className="row" style={{ marginRight: "10%", marginLeft: "10%" }}>
               {showEdit ? (
                 id ? (
-                  <div>
+                  <>
                     <TheaterForm id={id}></TheaterForm>
-                  </div>
+                  </>
                 ) : (
-                  <div>
+                  <>
                     <TheaterForm></TheaterForm>
-                  </div>
+                  </>
                 )
               ) : null}
             </div>

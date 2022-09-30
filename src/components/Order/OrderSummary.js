@@ -3,104 +3,138 @@ import fetchApi from "../../utils/fetchApi";
 import { GlobalContext } from "../../context/globalContext";
 import moment from "moment";
 
- function loadScript(src) {
-    return new Promise((resolve)=>{
-        const script = document.createElement('script');
-        script.src = src;
-        script.onload = () =>{
-            resolve(true);
-        }
-        script.onerror = () =>{
-            resolve(false);
-        }
-        document.body.appendChild(script);
-    })
-  }
+function loadScript(src) {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = () => {
+      resolve(true);
+    };
+    script.onerror = () => {
+      resolve(false);
+    };
+    document.body.appendChild(script);
+  });
+}
 
 const OrderSummary = (props) => {
-    const {user} = useContext(GlobalContext);
-    const [userDetails, setUserDetails] = useState({});
+  const { user, onAuthFail } = useContext(GlobalContext);
+  const [userDetails, setUserDetails] = useState({});
 
-    async function getUser(){
-        let res = await fetchApi.get(`/users/${user.userId}`);
-        if(res.data.statusCode === 200){
-            setUserDetails(res.data.user);
-        }else{
-            console.log(res.data);
-        }
-    }
-
-    useEffect(()=>{
-        getUser()
-    },[]);
-
-    async function handleSuccess(rzpres){
-        let booking = {
-            user: user.userId,
-            film: props.show.film._id,
-            theater: props.show.theater._id,
-            show: props.show._id,
-            bookedDate: moment().format("YYYY-MM-DD[T]HH:mm:ss"),
-            seatsBooked: props.seatsSelected,
-            amountPaid: props.order.amount/100,
-            status: 'Paid',
-            razorPayOrderId: rzpres.razorpay_order_id,
-            razorPayPaymentId: rzpres.razorpay_payment_id
-        }
-        let seating = {...props.seating};
-        seating.seatsBooked.push(...props.seatsSelected);
-        seating.show = seating.show._id;
-        let res = await fetchApi.post('/bookings/create-booking',booking);
-        if(res.data.statusCode === 200){
-            let resSeat = await fetchApi.put(`/seatings/${seating._id}`,seating);
-            if(resSeat.data.statusCode === 200){
-                props.setShowModal(false);
-                props.setSeatsSelected([]);
-                alert('Payment successful. Seats have been successfully booked');
-            }else{
-                console.log(resSeat.data)
-                let res = await fetchApi.delete(`/bookings/${res.data.booking._id}`);
-            }
-        }else{
-            console.log(res.data);
-        }
-    }
-
-    async function displayRazorPay(){
-        let res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
-        if(!res){
-            alert("The razorpay payment option is currently unavailable. Please try again later");
-            return
-        }
-
-        let image = document.domain === 'localhost' ? 'http://localhost:3000/favicon.ico' : `https://${document.domain}/favicon.ico`;
-        var options = {
-            "key": props.order.key_id, 
-            "amount": props.order.amount,
-            "currency": props.order.currency,
-            "name": "myTickets.com",
-            "description": "Booking a ticket",
-            "image": image,
-            "order_id": props.order.id,
-            "handler": function (response){
-                handleSuccess(response);
-            },
-            "prefill": {
-                "name": userDetails.name,
-                "email": userDetails.email,
-                "contact": userDetails.mobile
-            },
-            "theme": {
-                "color": "#3399cc"
-            }
-        };
-        var paymentObject = new window.Razorpay(options);
-        paymentObject.open();
-        paymentObject.on('payment.failed', function (response){
-            console.log(response.error)
-            alert('Payment has been failed. Please try again');
+  async function getUser() {
+    let token = sessionStorage.getItem("token");
+    let res = await fetchApi.get(`/users/${user.userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
     });
+    if (res.data.statusCode === 401) {
+      onAuthFail();
+    } else if (res.data.statusCode === 200) {
+      setUserDetails(res.data.user);
+    } else {
+      console.log(res.data);
     }
+  }
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  async function handleSuccess(rzpres) {
+    let booking = {
+      user: user.userId,
+      film: props.show.film._id,
+      theater: props.show.theater._id,
+      show: props.show._id,
+      bookedDate: moment().format("YYYY-MM-DD[T]HH:mm:ss"),
+      seatsBooked: props.seatsSelected,
+      amountPaid: props.order.amount / 100,
+      status: "Paid",
+      razorPayOrderId: rzpres.razorpay_order_id,
+      razorPayPaymentId: rzpres.razorpay_payment_id,
+    };
+    let seating = { ...props.seating };
+    seating.seatsBooked.push(...props.seatsSelected);
+    seating.show = seating.show._id;
+    let token = sessionStorage.getItem("token");
+    let res = await fetchApi.post("/bookings/create-booking", booking, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (res.data.statusCode === 401) {
+      onAuthFail();
+    } else if (res.data.statusCode === 200) {
+      let resSeat = await fetchApi.put(`/seatings/${seating._id}`, seating, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (resSeat.data.statusCode === 401) {
+        onAuthFail();
+      } else if (resSeat.data.statusCode === 200) {
+        props.setShowModal(false);
+        props.setSeatsSelected([]);
+        alert("Payment successful. Seats have been successfully booked");
+      } else {
+        console.log(resSeat.data);
+        let res = await fetchApi.delete(`/bookings/${res.data.booking._id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        alert("Something went wrong, please try again later");
+      }
+    } else {
+      console.log(res.data);
+    }
+  }
+
+  async function displayRazorPay() {
+    let res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+    if (!res) {
+      alert(
+        "The razorpay payment option is currently unavailable. Please try again later"
+      );
+      return;
+    }
+
+    let image =
+      document.domain === "localhost"
+        ? "http://localhost:3000/favicon.ico"
+        : `https://${document.domain}/favicon.ico`;
+    var options = {
+      key: props.order.key_id,
+      amount: props.order.amount,
+      currency: props.order.currency,
+      name: "myTickets.com",
+      description: "Booking a ticket",
+      image: image,
+      order_id: props.order.id,
+      handler: function (response) {
+        handleSuccess(response);
+      },
+      prefill: {
+        name: userDetails.name,
+        email: userDetails.email,
+        contact: userDetails.mobile,
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+    var paymentObject = new window.Razorpay(options);
+    paymentObject.open();
+    paymentObject.on("payment.failed", function (response) {
+      console.log(response.error);
+      alert("Payment has been failed. Please try again");
+    });
+  }
 
   return (
     <>

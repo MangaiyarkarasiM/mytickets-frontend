@@ -8,14 +8,18 @@ const showFormValidation = Yup.object().shape({
   film: Yup.string().required("Select a movie"),
   theater: Yup.string().required("Select a theater"),
   date: Yup.date().required("Show date is required"),
-  startTime: Yup.string().matches(
+  startTime: Yup.string()
+    .matches(
       "[0-9]{2}:[0-9]{2}:[0-9]{2}",
       "Please enter the time in HH:mm:ss format"
-    ).required("Show start time is required"),
-  endTime: Yup.string().matches(
+    )
+    .required("Show start time is required"),
+  endTime: Yup.string()
+    .matches(
       "[0-9]{2}:[0-9]{2}:[0-9]{2}",
       "Please enter the time in HH:mm:ss format"
-    ).required("Show end time is required")
+    )
+    .required("Show end time is required"),
 });
 
 const ShowForm = (props) => {
@@ -85,7 +89,7 @@ const ShowForm = (props) => {
                     Select a theater
                   </option>
                   {theaters?.map((theater) => {
-                    let theaterName = `${theater.name}, ${theater.city}`
+                    let theaterName = `${theater.name}, ${theater.city}`;
                     return (
                       <option
                         key={theater._id}

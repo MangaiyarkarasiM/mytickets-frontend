@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import fetchApi from "../utils/fetchApi";
+import { GlobalContext } from "../context/globalContext";
 
 const signupFormValidation = Yup.object().shape({
   name: Yup.string().required("Enter name"),
@@ -12,6 +13,7 @@ const signupFormValidation = Yup.object().shape({
 });
 
 function SignupPage(props) {
+  const { spin, setSpin } = useContext(GlobalContext);
   let [message, setMessage] = useState("");
   const navigate = useNavigate();
 
@@ -20,8 +22,8 @@ function SignupPage(props) {
       ...value,
       role: "user",
     });
-    console.log(res);
     if (res.data.statusCode === 200) {
+      setSpin(false);
       navigate("/login");
     } else {
       setMessage(res.data.message);
@@ -37,7 +39,11 @@ function SignupPage(props) {
       >
         <Formik
           initialValues={{}}
-          onSubmit={onSignup}
+          onSubmit={(value)=>{
+            setSpin(true);
+            onSignup(value);
+          }
+          }
           validationSchema={signupFormValidation}
         >
           {() => {
@@ -107,12 +113,21 @@ function SignupPage(props) {
                     )}
                   />
                 </div>
-                <button
+                {
+                  spin ? <button class="btn d-block btn-outline-primary rounded mb-4" type="button" disabled>
+                  <span
+                    class="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                   {" "}Processing...
+                </button> : <button
                   type="submit"
-                  className="btn d-block btn-outline-primary rounded mb-3"
+                  className="btn d-block btn-outline-primary rounded mb-4"
                 >
                   Sign up
                 </button>
+                }
               </Form>
             );
           }}

@@ -1,17 +1,32 @@
 import React, { useState, useEffect, useContext } from "react";
 import fetchApi from "../utils/fetchApi";
-import moment from 'moment';
+import moment from "moment";
 import { GlobalContext } from "../context/globalContext";
 
-function BookingsPage(props) {
-  const { user } = useContext(GlobalContext);
-  let [bookings,setBookings] = useState([]);
+function BookingsPage() {
+  const { user, onAuthFail } = useContext(GlobalContext);
+  let [bookings, setBookings] = useState([]);
 
   const getBookings = async () => {
-  
-    let res = user.role === 'admin' ? await fetchApi.get("/bookings") : await fetchApi.get(`/bookings/user/${user.userId}`);
-    //console.log(res.data);
-    if (res.data.statusCode === 200) {
+    let token = sessionStorage.getItem("token");
+    let res =
+      user.role === "admin"
+        ? await fetchApi.get("/bookings", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          })
+        : await fetchApi.get(`/bookings/user/${user.userId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+    if (res.data.statusCode === 401) {
+      onAuthFail();
+    } else if (res.data.statusCode === 200) {
       setBookings(res.data.bookings);
       //setMessage(res.data.message);
     } else {
@@ -47,25 +62,27 @@ function BookingsPage(props) {
               </thead>
               <tbody>
                 {bookings?.map((booking, index) => {
-                    return (
-                      <tr key={booking._id}>
-                        <td>{index+1}</td>
-                        <td>{booking.user.name}</td>
-                        <td>{booking.user.email}</td>
-                        <td>{booking.film.name}</td>
-                        <td>{`${booking.theater.name}, ${booking.theater.city}`}</td>
-                        <td>{moment(booking.show.date).format('DD-MM-YYYY')}</td>
-                        <td>{booking.show.startTime}</td>
-                        <td>{booking.show.endTime}</td>
-                        <td>{moment(booking.bookedDate).format('DD-MM-YYYY')}</td>
-                        <td>{booking.seatsBooked?.map((s)=>{
-                          return <span key={s}>{s} </span>
-                        })}</td>
-                        <td>{booking.amountPaid}</td>
-                        <td>{booking.status}</td>
-                      </tr>
-                    );
-                  })}
+                  return (
+                    <tr key={booking._id}>
+                      <td>{index + 1}</td>
+                      <td>{booking.user.name}</td>
+                      <td>{booking.user.email}</td>
+                      <td>{booking.film.name}</td>
+                      <td>{`${booking.theater.name}, ${booking.theater.city}`}</td>
+                      <td>{moment(booking.show.date).format("DD-MM-YYYY")}</td>
+                      <td>{booking.show.startTime}</td>
+                      <td>{booking.show.endTime}</td>
+                      <td>{moment(booking.bookedDate).format("DD-MM-YYYY")}</td>
+                      <td>
+                        {booking.seatsBooked?.map((s) => {
+                          return <span key={s}>{s} </span>;
+                        })}
+                      </td>
+                      <td>{booking.amountPaid}</td>
+                      <td>{booking.status}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

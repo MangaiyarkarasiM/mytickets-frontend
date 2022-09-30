@@ -5,16 +5,24 @@ import { GlobalContext } from "../context/globalContext";
 import fetchApi from "../utils/fetchApi";
 
 const MovieShowPage = () => {
-  let { getMovieWithId } = useContext(GlobalContext);
+  let { getMovieWithId, onAuthFail } = useContext(GlobalContext);
   const [movie, setMovie] = useState({});
   const [shows, setShows] = useState([]);
   const [showsByTheater, setShowsByTheater] = useState({});
   let { id } = useParams();
 
   async function getShows() {
-    let res = await fetchApi.get(`/shows/${id}`);
-    //console.log(res.data);
-    if (res.data.statusCode === 200) {
+    let token = sessionStorage.getItem("token");
+    let res = await fetchApi.get(`/shows/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (res.data.statusCode === 401) {
+      onAuthFail();
+    } else if (res.data.statusCode === 200) {
       setShows(res.data.shows);
       setShowsByTheater(res.data.showsByTheater);
     } else {
@@ -102,12 +110,13 @@ const MovieShowPage = () => {
                 return (
                   <div key={th}>
                     {shows.length > 0 ? (
-                      <div
-                        className="d-flex flex-row mb-3 align-items-center"
-                      >
+                      <div className="d-flex flex-row mb-3 align-items-center">
                         <>
                           <h6 className="w-25 ml-2">{shows[0].theater.name}</h6>
-                          <div style={{ fontSize: "0.85rem" }} className="d-flex">
+                          <div
+                            style={{ fontSize: "0.85rem" }}
+                            className="d-flex"
+                          >
                             {shows?.map((show, index) => {
                               return (
                                 <Link
@@ -115,7 +124,13 @@ const MovieShowPage = () => {
                                   to={`/booktickets/${show._id}`}
                                   className="text-decoration-none mr-3"
                                 >
-                                  <div className="text-success border rounded px-4 py-2 text-center" style={{maxWidth:"8rem",minWidth:"8rem"}}>
+                                  <div
+                                    className="text-success border rounded px-4 py-2 text-center"
+                                    style={{
+                                      maxWidth: "8rem",
+                                      minWidth: "8rem",
+                                    }}
+                                  >
                                     <div
                                       key={index}
                                       className="d-flex flex-column"

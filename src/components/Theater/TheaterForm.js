@@ -15,7 +15,8 @@ const theaterFormValidation = Yup.object().shape({
 
 function TheaterForm(props) {
   //console.log(props)
-  const { theaters, editTheater, addTheater, setShowEdit, setId } = useContext(TheaterContext);
+  const { theaters, editTheater, addTheater, setShowEdit, setId } =
+    useContext(TheaterContext);
   const [theater, setTheater] = useState({});
   const [userID, setUserID] = useState("");
   useEffect(() => {
@@ -60,133 +61,141 @@ function TheaterForm(props) {
       >
         {(prop) => {
           return (
-            <Form className="d-flex flex-column align-items-center justify-conetent-center border-info rounded mt-3">
-              <div className="mb-4">
-                <label className="d-block font-weight-bold">Theater name</label>
-                <Field
-                  name="name"
-                  type="text"
-                  value={prop.values.name}
-                  className="d-block rounded form-control"
-                  placeholder="Theater name"
-                  size="50"
-                />
-                <ErrorMessage
-                  name="name"
-                  render={(msg) => (
-                    <small className="d-block text-danger">{msg}</small>
-                  )}
-                />
+            <Form className="rounded mt-3">
+              <div className="d-flex flex-row justify-content-start column">
+                <div className="m-2">
+                  <div className="mb-4">
+                    <label className="d-block font-weight-bold">
+                      Theater name
+                    </label>
+                    <Field
+                      name="name"
+                      type="text"
+                      value={prop.values.name}
+                      className="d-block rounded form-control"
+                      placeholder="Theater name"
+                      size="50"
+                    />
+                    <ErrorMessage
+                      name="name"
+                      render={(msg) => (
+                        <small className="d-block text-danger">{msg}</small>
+                      )}
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="d-block font-weight-bold">
+                      Address Line1
+                    </label>
+                    <Field
+                      name="addressLine1"
+                      type="text"
+                      value={prop.values.addressLine1}
+                      className="d-block rounded form-control"
+                      placeholder="Address"
+                      size="50"
+                    />
+                    <ErrorMessage
+                      name="addressLine1"
+                      render={(msg) => (
+                        <small className="d-block text-danger">{msg}</small>
+                      )}
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="d-block font-weight-bold">
+                      Address Line2
+                    </label>
+                    <Field
+                      name="addressLine2"
+                      type="text"
+                      value={prop.values.addressLine2}
+                      className="d-block rounded form-control"
+                      placeholder="Address"
+                      size="50"
+                    />
+                    <ErrorMessage
+                      name="addressLine2"
+                      render={(msg) => (
+                        <small className="d-block text-danger">{msg}</small>
+                      )}
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="d-block font-weight-bold">City</label>
+                    <Field
+                      name="city"
+                      type="text"
+                      value={prop.values.city}
+                      className="d-block rounded form-control"
+                      placeholder="City"
+                      size="50"
+                    />
+                    <ErrorMessage
+                      name="city"
+                      render={(msg) => (
+                        <small className="d-block text-danger">{msg}</small>
+                      )}
+                    />
+                  </div>
+                </div>
+                <div className="m-2">
+                  <div className="mb-4">
+                    <label className="d-block font-weight-bold">State</label>
+                    <Field
+                      name="state"
+                      type="text"
+                      value={prop.values.state}
+                      className="d-block rounded form-control"
+                      placeholder="State"
+                      size="50"
+                    />
+                    <ErrorMessage
+                      name="state"
+                      render={(msg) => (
+                        <small className="d-block text-danger">{msg}</small>
+                      )}
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="d-block font-weight-bold">Pin Code</label>
+                    <Field
+                      name="pincode"
+                      type="text"
+                      value={prop.values.pincode}
+                      maxLength="6"
+                      minLength="6"
+                      className="d-block rounded form-control"
+                      placeholder="Pin Code"
+                      size="50"
+                    />
+                    <ErrorMessage
+                      name="pincode"
+                      render={(msg) => (
+                        <small className="d-block text-danger">{msg}</small>
+                      )}
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="d-block font-weight-bold">Country</label>
+                    <Field
+                      name="country"
+                      type="text"
+                      value={prop.values.country}
+                      className="d-block rounded form-control"
+                      placeholder="Country"
+                      size="50"
+                    />
+                    <ErrorMessage
+                      name="country"
+                      render={(msg) => (
+                        <small className="d-block text-danger">{msg}</small>
+                      )}
+                    />
+                  </div>
+                </div>
               </div>
-              <div className="mb-4">
-                <label className="d-block font-weight-bold">
-                  Address Line1
-                </label>
-                <Field
-                  name="addressLine1"
-                  type="text"
-                  value={prop.values.addressLine1}
-                  className="d-block rounded form-control"
-                  placeholder="Address"
-                  size="50"
-                />
-                <ErrorMessage
-                  name="addressLine1"
-                  render={(msg) => (
-                    <small className="d-block text-danger">{msg}</small>
-                  )}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="d-block font-weight-bold">
-                  Address Line2
-                </label>
-                <Field
-                  name="addressLine2"
-                  type="text"
-                  value={prop.values.addressLine2}
-                  className="d-block rounded form-control"
-                  placeholder="Address"
-                  size="50"
-                />
-                <ErrorMessage
-                  name="addressLine2"
-                  render={(msg) => (
-                    <small className="d-block text-danger">{msg}</small>
-                  )}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="d-block font-weight-bold">City</label>
-                <Field
-                  name="city"
-                  type="text"
-                  value={prop.values.city}
-                  className="d-block rounded form-control"
-                  placeholder="City"
-                  size="50"
-                />
-                <ErrorMessage
-                  name="city"
-                  render={(msg) => (
-                    <small className="d-block text-danger">{msg}</small>
-                  )}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="d-block font-weight-bold">State</label>
-                <Field
-                  name="state"
-                  type="text"
-                  value={prop.values.state}
-                  className="d-block rounded form-control"
-                  placeholder="State"
-                  size="50"
-                />
-                <ErrorMessage
-                  name="state"
-                  render={(msg) => (
-                    <small className="d-block text-danger">{msg}</small>
-                  )}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="d-block font-weight-bold">Pin Code</label>
-                <Field
-                  name="pincode"
-                  type="text"
-                  value={prop.values.pincode}
-                  maxLength="6"
-                  minLength="6"
-                  className="d-block rounded form-control"
-                  placeholder="Pin Code"
-                  size="50"
-                />
-                <ErrorMessage
-                  name="pincode"
-                  render={(msg) => (
-                    <small className="d-block text-danger">{msg}</small>
-                  )}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="d-block font-weight-bold">Country</label>
-                <Field
-                  name="country"
-                  type="text"
-                  value={prop.values.country}
-                  className="d-block rounded form-control"
-                  placeholder="Country"
-                  size="50"
-                />
-                <ErrorMessage
-                  name="country"
-                  render={(msg) => (
-                    <small className="d-block text-danger">{msg}</small>
-                  )}
-                />
-              </div>
-              <div className="d-flex justify-content-between">
+              <div className="d-flex justify-content-around">
                 {props.id ? (
                   <button type="submit" className="btn btn-primary mr-4">
                     Update

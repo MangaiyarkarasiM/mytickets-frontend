@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-//import {GlobalContext} from '../../context/globalContext';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { GlobalContext } from "../context/globalContext";
@@ -10,8 +9,8 @@ const loginFormValidation = Yup.object().shape({
   password: Yup.string().required("Enter password"),
 });
 
-function LoginPage(props) {
-  const {onLogin,message} = useContext(GlobalContext);
+function LoginPage() {
+  const { onLogin, message, spin, setSpin } = useContext(GlobalContext);
 
   return (
     <div className="my-5 d-flex flex-column">
@@ -22,7 +21,10 @@ function LoginPage(props) {
       >
         <Formik
           initialValues={{}}
-          onSubmit={onLogin}
+          onSubmit={(value)=>{
+            setSpin(true);
+            onLogin(value);
+          }}
           validationSchema={loginFormValidation}
           className="d-inline-block mt-2"
         >
@@ -61,13 +63,21 @@ function LoginPage(props) {
                     )}
                   />
                 </div>
-
-                <button
+                {
+                  spin ? <button class="btn d-block btn-outline-primary rounded mb-4" type="button" disabled>
+                  <span
+                    class="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                   {" "}Processing...
+                </button> : <button
                   type="submit"
                   className="btn d-block btn-outline-primary rounded mb-4"
                 >
                   Login
                 </button>
+                }
               </Form>
             );
           }}

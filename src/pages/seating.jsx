@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import fetchApi from "../utils/fetchApi";
 import moment from "moment";
 import OrderSummary from "../components/Order/OrderSummary";
 import Modal from "../components/Modal/Modal";
+import { GlobalContext } from "../context/globalContext";
 
 const Seatingpage = () => {
+  const { onAuthFail } = useContext(GlobalContext);
   const [seating, setSeating] = useState({});
   const [show, setShow] = useState({});
   const [seatsSelected, setSeatsSelected] = useState([]);
   const [price, setPrice] = useState(0);
   const [showModal, setShowModal] = useState(false);
-  const [order,setOrder] = useState({});
+  const [order, setOrder] = useState({});
   let { id } = useParams();
   const letter = {
     1: "A",
@@ -27,8 +29,17 @@ const Seatingpage = () => {
   };
 
   async function getShow(id) {
-    let res = await fetchApi.get(`/shows/show/${id}`);
-    if (res.data.statusCode === 200) {
+    let token = sessionStorage.getItem("token");
+    let res = await fetchApi.get(`/shows/show/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (res.data.statusCode === 401) {
+      onAuthFail();
+    } else if (res.data.statusCode === 200) {
       setShow(res.data.show);
       // console.log(res.data.show);
     } else {
@@ -37,8 +48,17 @@ const Seatingpage = () => {
   }
 
   async function getSeating(id) {
-    let res = await fetchApi.get(`/seatings/${id}`);
-    if (res.data.statusCode === 200) {
+    let token = sessionStorage.getItem("token");
+    let res = await fetchApi.get(`/seatings/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (res.data.statusCode === 401) {
+      onAuthFail();
+    } else if (res.data.statusCode === 200) {
       setSeating(res.data.seatings);
       //console.log(res.data.seatings);
       getShow(res.data.seatings.show._id);
@@ -72,11 +92,24 @@ const Seatingpage = () => {
 
   async function onPay() {
     let amount = seatsSelected.length * 8 + price;
-    let res = await fetchApi.post("/razorpay/create-order", { amount });
-    if(res.data.statusCode === 200){
+    let token = sessionStorage.getItem("token");
+    let res = await fetchApi.post(
+      "/razorpay/create-order",
+      { amount },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (res.data.statusCode === 401) {
+      onAuthFail();
+    } else if (res.data.statusCode === 200) {
       setOrder(res.data.order);
       setShowModal(true);
-    }else{
+    } else {
       console.log(res.data);
     }
   }
@@ -194,7 +227,7 @@ const Seatingpage = () => {
             </div>
           </div>
         </section>
-        {!showModal && seatsSelected.length>0 && (
+        {!showModal && seatsSelected.length > 0 && (
           <section
             className="bg-light z-index-2 w-100 fixed-bottom"
             style={{ height: "40px" }}

@@ -1,14 +1,9 @@
 import React, { useContext } from "react";
 import Slider from "../components/Slider/Slider";
-import { GlobalContext} from "../context/globalContext";
+import { GlobalContext } from "../context/globalContext";
 
-function DashboardPage(props) {
+function DashboardPage() {
   const { theaters, movies } = useContext(GlobalContext);
-
-  // useEffect(() => {
-  //   getMovie();
-  //   getTheater();
-  // }, []);
 
   return (
     <>
@@ -17,16 +12,12 @@ function DashboardPage(props) {
       </div>
       <div className="container">
         <div className="row">
-          <div className="col-sm-12 col-md-12 col-lg-12">
-            
-          </div>
+          <div className="col-sm-12 col-md-12 col-lg-12"></div>
         </div>
         <div className="row">
           <div className="col-sm-12 col-md-12 col-lg-6">
             <div>
-              <h3 className="ml-2 mt-2 text-danger">
-                Movies
-              </h3>
+              <h3 className="ml-2 mt-2 text-danger">Movies</h3>
               {movies.map((movie, index) => {
                 return (
                   <div
@@ -44,9 +35,7 @@ function DashboardPage(props) {
           </div>
           <div className="col-sm-12 col-md-12 col-lg-6">
             <div>
-              <h3 className="ml-2 mt-2 text-danger">
-                Theaters
-              </h3>
+              <h3 className="ml-2 mt-2 text-danger">Theaters</h3>
               {theaters.map((theater, index) => {
                 return (
                   <div

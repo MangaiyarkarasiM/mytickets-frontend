@@ -96,7 +96,9 @@ function ProfileForm(props) {
                     name="gender"
                     className="d-block rounded form-control"
                   >
-                    <option value="" defaultChecked >Select</option>
+                    <option value="" defaultChecked>
+                      Select
+                    </option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                   </Field>

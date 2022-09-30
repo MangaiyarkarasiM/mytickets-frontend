@@ -19,9 +19,10 @@ import Seatingpage from "./pages/seating";
 
 const exclusionArray = ["/login", "/signup", "/bookings", "/"];
 const layoutExclusionArray = ["/login", "/signup", "/"];
-const footerExclusionArray = ["/booktickets"]
+const footerExclusionArray = ["/booktickets"];
 
 function App() {
+  let [spin, setSpin] = useState(false);
   let [movies, setMovies] = useState([]);
   let [theaters, setTheaters] = useState([]);
   let [message, setMessage] = useState("");
@@ -45,38 +46,67 @@ function App() {
     }
   }, [location.pathname]);
 
+  const onAuthFail = () => {
+    window.alert("Your session has ended. Please login again to authenticate");
+    navigate("/login");
+  };
+
   async function getMovie() {
-    let res = await fetchApi.get("/movies");
-    //console.log(res.data);
-    if (res.data.statusCode === 200) {
+    let token = sessionStorage.getItem("token");
+    let res = await fetchApi.get("/movies", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (res.data.statusCode === 401) {
+      onAuthFail();
+    } else if (res.data.statusCode === 200) {
       setMovies(res.data.movies);
-      //setMessage(res.data.message);
     } else {
       console.log(res.data);
+      setMessage(res.data.message);
     }
   }
 
   async function getTheater() {
-    let res = await fetchApi.get("/theaters");
-    //console.log(res.data);
-    if (res.data.statusCode === 200) {
+    let token = sessionStorage.getItem("token");
+    let res = await fetchApi.get("/theaters", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (res.data.statusCode === 401) {
+      onAuthFail();
+    } else if (res.data.statusCode === 200) {
       setTheaters(res.data.theaters);
-      //setMessage(res.data.message);
+    } else {
+      console.log(res.data);
+      setMessage(res.data.message);
+    }
+  }
+
+  async function getMovieWithId(id) {
+    let token = sessionStorage.getItem("token");
+    let res = await fetchApi.get(`/movies/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (res.data.statusCode === 401) {
+      onAuthFail();
+    } else if (res.data.statusCode === 200) {
+      return res.data.movie;
     } else {
       console.log(res.data);
     }
   }
 
-  async function getMovieWithId(id) {
-    let res = await fetchApi.get(`/movies/${id}`);
-    //console.log(res.data)
-    if (res.data.statusCode === 200) {
-          return res.data.movie;
-    } else {
-      console.log(res.data);
-    }
-  }
-  
   const onLogin = async (value) => {
     let res = await fetchApi.post("/users/login", { ...value });
     if (res.data.statusCode === 200) {
@@ -89,6 +119,7 @@ function App() {
         role: res.data.role,
       });
       setMessage("");
+      setSpin(false);
       navigate("/dashboard");
     } else {
       setMessage(res.data.message);
@@ -106,7 +137,10 @@ function App() {
         getMovie,
         getTheater,
         getMovieWithId,
-        setMessage
+        setMessage,
+        onAuthFail,
+        spin,
+        setSpin
       }}
     >
       <div className="container-fluid">
@@ -127,7 +161,9 @@ function App() {
         <Route path="/" element={<LoginPage />}></Route>
       </Routes>
       <div className="container-fluid">
-      {footerExclusionArray.indexOf(location.pathname.slice(0,12)) < 0 && <Footer />}
+        {footerExclusionArray.indexOf(location.pathname.slice(0, 12)) < 0 && (
+          <Footer />
+        )}
       </div>
     </GlobalProvider>
   );
