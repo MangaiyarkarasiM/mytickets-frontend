@@ -26,6 +26,7 @@ function SignupPage(props) {
       setSpin(false);
       navigate("/login");
     } else {
+      setSpin(false);
       setMessage(res.data.message);
     }
   };
