@@ -14,6 +14,7 @@ const Seatingpage = () => {
   const [price, setPrice] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [order, setOrder] = useState({});
+  const [onLoad, setOnLoad] = useState(true);
   let { id } = useParams();
   const letter = {
     1: "A",
@@ -41,6 +42,7 @@ const Seatingpage = () => {
       onAuthFail();
     } else if (res.data.statusCode === 200) {
       setShow(res.data.show);
+      setOnLoad(false);
       // console.log(res.data.show);
     } else {
       console.log(res.data);
@@ -141,7 +143,9 @@ const Seatingpage = () => {
           </div>
         </section>
         <section className="bg-light w-100 pb-3 mb-3">
-          <div
+          {
+            onLoad ? <div className="text-center py-3"> Please wait while we load the seats for you</div> :
+            <div
             className="d-flex justify-conetent-center align-items-center flex-column"
             style={{ marginRight: "20%", marginLeft: "20%" }}
           >
@@ -207,6 +211,7 @@ const Seatingpage = () => {
               <div className="my-3">All eyes this way please!</div>
             </div>
           </div>
+          }
         </section>
         <section
           className="bg-light z-index-1 w-100 fixed-bottom"
