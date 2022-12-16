@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const fetchApi = axios.create({
-  baseURL: 'https://mytickets-backend.herokuapp.com',
+  baseURL: 'https://mytickets.vercel.app',
   //baseURL:'http://localhost:8000',
 })
 
